@@ -9,6 +9,7 @@ config/
 ├── nix/           # nix-darwin system configuration
 ├── zsh/           # shell config (.zshrc)
 ├── git/           # git config and global gitignore
+├── ghostty/       # terminal emulator config
 └── starship/      # prompt configuration
 ```
 
@@ -30,9 +31,10 @@ config/
    ln -sf ~/Code/config/zsh/.zshrc ~/.zshrc
    ln -sf ~/Code/config/git/.gitconfig ~/.gitconfig
    ln -sf ~/Code/config/git/.gitignore_global ~/.gitignore_global
-   mkdir -p ~/.config
+   mkdir -p ~/.config/ghostty  # also creates ~/.config if needed
    ln -sf ~/Code/config/starship/starship.toml ~/.config/starship.toml
    ln -sf ~/Code/config/nix ~/.config/nix-darwin-config
+   ln -sf ~/Code/config/ghostty/config ~/.config/ghostty/config
    ```
 
 4. Bootstrap nix-darwin:
