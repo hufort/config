@@ -1,0 +1,9 @@
+# Minimal prompt: directory + git branch + node version when relevant
+format = "$directory$git_branch$git_status$nodejs$character"
+
+[directory]
+truncation_length = 3
+
+[nodejs]
+format = "[$symbol($version )]($style)"
+detect_files = ["package.json"]

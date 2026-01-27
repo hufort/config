@@ -1,0 +1,13 @@
+[user]
+    name = Hugh Forte
+    email = hugh.forte@gmail.com
+[init]
+    defaultBranch = main
+[diff]
+    tool = cursor
+[difftool "cursor"]
+    cmd = cursor --wait --diff $LOCAL $REMOTE
+[push]
+    autoSetupRemote = true
+[core]
+    excludesfile = ~/.gitignore_global
