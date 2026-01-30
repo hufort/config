@@ -26,6 +26,9 @@ alias gtfo="git reset --hard HEAD"
 # Nix rebuild after config changes
 alias rebuild="sudo darwin-rebuild switch --flake ~/.config/nix-darwin-config"
 
+# Ghostty
+alias ghostty-docs="cat /Applications/Ghostty.app/Contents/Resources/ghostty/doc/ghostty.1.md"
+
 # Open directory in Cursor
 csr() {
   local target="${1:-.}"
