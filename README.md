@@ -6,11 +6,12 @@ Personal system configuration for macOS, managed with nix-darwin.
 
 ```
 config/
-├── nix/           # nix-darwin system configuration
-├── zsh/           # shell config (.zshrc)
-├── git/           # git config and global gitignore
+├── browser/       # browser extension configs
 ├── ghostty/       # terminal emulator config
-└── starship/      # prompt configuration
+├── git/           # git config and global gitignore
+├── nix/           # nix-darwin system configuration
+├── starship/      # prompt configuration
+└── zsh/           # shell config (.zshrc)
 ```
 
 ## Setup on a new machine
