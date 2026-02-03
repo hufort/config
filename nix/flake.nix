@@ -28,6 +28,7 @@
         tree
         wget
         curl
+        flyctl
       ];
 
       # Nerd fonts for prompt symbols
