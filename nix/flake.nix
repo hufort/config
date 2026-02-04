@@ -29,6 +29,7 @@
         wget
         curl
         flyctl
+	      stripe-cli
       ];
 
       # Nerd fonts for prompt symbols
