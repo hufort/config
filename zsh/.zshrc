@@ -10,6 +10,9 @@ eval "$(fzf --zsh)"
 # Starship prompt
 eval "$(starship init zsh)"
 
+# Auto-load project-specific environments
+eval "$(direnv hook zsh)"
+
 # Modern CLI replacements
 alias ls='eza'
 alias ll='eza -l'

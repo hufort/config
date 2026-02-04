@@ -28,8 +28,7 @@
         tree
         wget
         curl
-        flyctl
-	      stripe-cli
+	direnv
       ];
 
       # Nerd fonts for prompt symbols
