@@ -66,6 +66,13 @@ gbc() {
   [ -n "$branch" ] && printf '%s' "$branch" | pbcopy
 }
 
+# Interactive branch merge
+gbm() {
+  local branch
+  branch=$(git branch --format='%(refname:short)' | grep -v "^$(git branch --show-current)$" | fzf --height 40% --reverse) || return
+  [ -n "$branch" ] && git merge "$branch"
+}
+
 # Create and checkout new branch
 cob() {
   git checkout -b "$1"
