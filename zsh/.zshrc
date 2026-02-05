@@ -59,6 +59,13 @@ del() {
   [ -n "$branch" ] && git branch -D "$branch"
 }
 
+# Interactive branch copy (branch name to clipboard)
+gbc() {
+  local branch
+  branch=$(git branch --format='%(refname:short)' | fzf --height 40% --reverse) || return
+  [ -n "$branch" ] && printf '%s' "$branch" | pbcopy
+}
+
 # Create and checkout new branch
 cob() {
   git checkout -b "$1"
