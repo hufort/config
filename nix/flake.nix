@@ -71,6 +71,7 @@
         NSGlobalDomain.InitialKeyRepeat = 15;
         NSGlobalDomain.KeyRepeat = 2;
         NSGlobalDomain.ApplePressAndHoldEnabled = false;  # Key repeat instead of accents
+        NSGlobalDomain.AppleShowScrollBars = "WhenScrolling";  # Show scroll bars when scrolling
         screencapture.location = "~/Downloads/screenshots";
       };
     };
