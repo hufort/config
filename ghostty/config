@@ -1,6 +1,11 @@
 font-size = 14
 theme = Solarized Dark Patched
-window-height = 30
-window-width = 100
+
+macos-window-shadow = false
+macos-titlebar-style = tabs
+
+window-height = 40
+window-width = 120
 window-padding-x = 12
 window-padding-y = 4
+window-decoration = auto
