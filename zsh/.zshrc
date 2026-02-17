@@ -14,4 +14,4 @@ eval "$(starship init zsh)"
 eval "$(direnv hook zsh)"
 
 # Aliases and functions 
-source "${0:A:h}/aliases.zsh"
+source "${${(%):-%x}:A:h}/aliases.zsh"
