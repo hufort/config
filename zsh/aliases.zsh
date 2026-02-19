@@ -8,7 +8,7 @@ alias cat='bat'
 alias main="git checkout main && git pull"
 alias dev="git checkout dev && git pull"
 alias gb="git branch"
-alias lol="git log --oneline"
+alias lol="git log --oneline origin/main..HEAD"
 alias gtfo="git reset --hard HEAD"
 
 # Nix rebuild after config changes
