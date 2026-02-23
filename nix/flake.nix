@@ -28,7 +28,8 @@
         tree
         wget
         curl
-	direnv
+	      direnv
+	      _1password-cli
       ];
 
       # Nerd fonts for prompt symbols
@@ -58,6 +59,16 @@
 
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
+
+      # Allow specific unfree packages
+      nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (nixpkgs.lib.getName pkg) [
+        "1password-cli"
+      ];
+
+      # Symlink op to /usr/local/bin so tools like Raycast can find it
+      system.activationScripts.postActivation.text = ''
+        ln -sf /run/current-system/sw/bin/op /usr/local/bin/op
+      '';
 
       # MacOS system defaults config
       system.defaults = {
