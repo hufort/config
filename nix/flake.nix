@@ -72,6 +72,8 @@
       system.activationScripts.postActivation.text = ''
         ln -sf /run/current-system/sw/bin/op /usr/local/bin/op
         ln -sf /Users/hugh/Code/config/tmux/tmux.conf /Users/hugh/.tmux.conf
+        mkdir -p /Users/hugh/.config/git
+        ln -sf /Users/hugh/Code/config/git/config /Users/hugh/.config/git/config
       '';
 
       # MacOS system defaults config
