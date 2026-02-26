@@ -7,10 +7,8 @@ alias cat='bat'
 # Git aliases
 alias main="git checkout main && git pull"
 alias dev="git checkout dev && git pull"
-alias gb="git branch"
 alias lol="git log --oneline origin/main..HEAD"
 alias gtfo="git reset --hard HEAD"
-alias gs="git status"
 
 # Nix rebuild after config changes
 alias rebuild="sudo darwin-rebuild switch --flake ~/.config/nix-darwin-config"

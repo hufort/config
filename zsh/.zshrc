@@ -13,5 +13,8 @@ eval "$(starship init zsh)"
 # Auto-load project-specific environments
 eval "$(direnv hook zsh)"
 
-# Aliases and functions 
+# Aliases and functions
 source "${${(%):-%x}:A:h}/aliases.zsh"
+
+# zsh functions
+for f in "${${(%):-%x}:A:h}/functions/"*; do source "$f"; done
