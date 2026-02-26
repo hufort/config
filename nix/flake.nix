@@ -32,6 +32,7 @@
 	      _1password-cli
         tmux
         glow
+        zoxide
       ];
 
       # Nerd fonts for prompt symbols

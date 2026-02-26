@@ -10,6 +10,9 @@ eval "$(fzf --zsh)"
 # Starship prompt
 eval "$(starship init zsh)"
 
+# Zoxide (smart cd)
+eval "$(zoxide init zsh)"
+
 # Auto-load project-specific environments
 eval "$(direnv hook zsh)"
 
