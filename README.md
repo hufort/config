@@ -8,10 +8,11 @@ Personal system configuration for macOS, managed with nix-darwin.
 config/
 ├── browser/       # browser extension configs
 ├── ghostty/       # terminal emulator config
-├── git/           # git config and global gitignore
+├── git/           # shared git config (user, aliases, pull/push settings)
 ├── nix/           # nix-darwin system configuration
 ├── starship/      # prompt configuration
-└── zsh/           # shell config (.zshrc)
+├── tmux/          # tmux config
+└── zsh/           # shell config, aliases, and functions
 ```
 
 ## Setup on a new machine
@@ -30,9 +31,9 @@ config/
 3. Symlink configs:
    ```bash
    ln -sf ~/Code/config/zsh/.zshrc ~/.zshrc
-   ln -sf ~/Code/config/git/.gitconfig ~/.gitconfig
-   ln -sf ~/Code/config/git/.gitignore_global ~/.gitignore_global
-   mkdir -p ~/.config/ghostty  # also creates ~/.config if needed
+   ln -sf ~/Code/config/tmux/tmux.conf ~/.tmux.conf
+   mkdir -p ~/.config/ghostty ~/.config/git
+   ln -sf ~/Code/config/git/config ~/.config/git/config
    ln -sf ~/Code/config/starship/starship.toml ~/.config/starship.toml
    ln -sf ~/Code/config/nix ~/.config/nix-darwin-config
    ln -sf ~/Code/config/ghostty/config ~/.config/ghostty/config
@@ -42,6 +43,7 @@ config/
    ```bash
    nix run nix-darwin -- switch --flake ~/.config/nix-darwin-config
    ```
+   Note: the activation script will re-create the `~/.tmux.conf` and `~/.config/git/config` symlinks on each rebuild.
 
 5. Install Cursor shell command: `Cmd+Shift+P` → "Install 'cursor' command"
 
