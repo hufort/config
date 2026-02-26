@@ -30,6 +30,8 @@
         curl
 	      direnv
 	      _1password-cli
+        tmux
+        glow
       ];
 
       # Nerd fonts for prompt symbols
@@ -66,8 +68,10 @@
       ];
 
       # Symlink op to /usr/local/bin so tools like Raycast can find it
+      # Symlink tmux config from config repo
       system.activationScripts.postActivation.text = ''
         ln -sf /run/current-system/sw/bin/op /usr/local/bin/op
+        ln -sf /Users/hugh/Code/config/tmux/tmux.conf /Users/hugh/.tmux.conf
       '';
 
       # MacOS system defaults config
