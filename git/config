@@ -7,6 +7,7 @@
 	b = branch
 	c = commit
 	d = diff
+	l = log
 	f = fetch
 	u = pull
 	m = merge
