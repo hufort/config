@@ -33,6 +33,7 @@
         tmux
         glow
         zoxide
+        pam-reattach
       ];
 
       # Nerd fonts for prompt symbols
@@ -40,8 +41,9 @@
         nerd-fonts.jetbrains-mono
       ];
 
-      # unlock sudo with touchID
+      # unlock sudo with touchID (reattach enables this inside tmux sessions)
       security.pam.services.sudo_local.touchIdAuth = true;
+      security.pam.services.sudo_local.reattach = true;
 
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
