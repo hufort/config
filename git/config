@@ -2,6 +2,9 @@
 	name = hufort
 	email = hugh.forte@gmail.com
 
+[core]
+	excludesfile = ~/Code/config/git/ignore
+
 [alias]
 	a = add
 	b = branch
@@ -31,3 +34,6 @@
 
 [help]
 	autocorrect = 1
+
+[blame]
+	ignoreRevsFile = .git-blame-ignore-revs

@@ -1,0 +1,8 @@
+# Claude Code
+.claude/
+
+# Running notes
+RUNNING_NOTES.md
+
+# Temp directories
+**/tmp/
