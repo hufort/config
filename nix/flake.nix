@@ -16,10 +16,12 @@
       # $ nix-env -qaP | grep wget
       environment.systemPackages = with pkgs; [
         vim
+        neovim
         git
         gh
         jq
         ripgrep
+        fd
         fzf
         eza
         bat
@@ -77,6 +79,7 @@
         ln -sf /Users/hugh/Code/config/tmux/tmux.conf /Users/hugh/.tmux.conf
         mkdir -p /Users/hugh/.config/git
         ln -sf /Users/hugh/Code/config/git/config /Users/hugh/.config/git/config
+        ln -sfn /Users/hugh/Code/config/nvim /Users/hugh/.config/nvim
       '';
 
       # MacOS system defaults config
