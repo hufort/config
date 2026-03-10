@@ -6,3 +6,6 @@ RUNNING_NOTES.md
 
 # Temp directories
 **/tmp/
+
+# Neovim logs
+/.nvimlog

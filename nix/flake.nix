@@ -18,6 +18,7 @@
         vim
         neovim
         git
+        lazygit
         gh
         jq
         ripgrep
