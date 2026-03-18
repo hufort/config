@@ -1,5 +1,5 @@
 font-size = 14
-theme = Solarized Dark Patched
+theme = dark:Solarized Dark Patched,light:Flexoki Light
 
 macos-window-shadow = false
 macos-titlebar-style = tabs
