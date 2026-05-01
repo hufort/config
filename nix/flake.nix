@@ -55,6 +55,10 @@
       programs.zsh.enableSyntaxHighlighting = true;
       programs.zsh.enableAutosuggestions = true;
 
+      # Use the standard Unix Ctrl position on Apple keyboards.
+      system.keyboard.enableKeyMapping = true;
+      system.keyboard.remapCapsLockToControl = true;
+
       # Let Determinate manage Nix daemon instead of nix-darwin
       nix.enable = false;
 
