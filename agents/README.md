@@ -2,9 +2,11 @@
 
 Version-controlled agent harness configuration and personal agent assets.
 
-This directory is intended to become the source of truth for agent-related concerns such as Pi extensions, Pi-specific skills, prompt templates, and other harness configuration.
+Agent-related concerns live in this config repo for now because the current assets are personal configuration, not a reusable package. Keeping them next to the rest of the machine/bootstrap config makes setup and review straightforward. Split this into a dedicated repo only if these assets need an independent release lifecycle or need to be shared beyond this config.
 
 ## Layout
+
+The scaffold is intentionally minimal and Pi-only:
 
 ```text
 agents/
@@ -14,19 +16,38 @@ agents/
     └── prompts/     # Pi prompt templates, if/when needed
 ```
 
-## Notes
+There are no top-level `shared/`, `claude/`, or `codex/` directories yet. Add shared or harness-specific directories only when a concrete need appears; avoid creating empty taxonomy ahead of real usage.
 
-- Keep harness-specific executable code under that harness's directory.
-- Add shared or cross-harness directories only when there is a concrete need.
-- Prefer version-controlled source here, then load/symlink from the harness-specific runtime locations.
+## Pi setup
 
-## Pi
+Pi loads these files through Pi settings that point at this repo, rather than symlinks into `~/.pi/agent/extensions/`.
 
-Pi can load extensions from this repo by adding paths to Pi settings, or by symlinking files into `~/.pi/agent/extensions/`.
+Add local extension paths to `~/.pi/agent/settings.json`:
 
-Example symlink for a global Pi extension:
-
-```bash
-mkdir -p ~/.pi/agent/extensions
-ln -sf ~/Code/config/agents/pi/extensions/todos.ts ~/.pi/agent/extensions/todos.ts
+```json
+{
+  "extensions": [
+    "/Users/hugh/Code/config/agents/pi/extensions/todos.ts",
+    "/Users/hugh/Code/config/agents/pi/extensions/answer.ts"
+  ]
+}
 ```
+
+After changing extension files, reload Pi with `/reload` or restart Pi.
+
+### Todo extension
+
+`agents/pi/extensions/todos.ts` provides the `/todos` UI and todo tools. It stores todo state under `.pi/todos` by default, or under `PI_TODO_PATH` when that environment variable is set.
+
+The repo intentionally ignores `.pi/`, including `.pi/todos/`, because those files are local runtime/session state rather than durable configuration.
+
+### Extension provenance
+
+Record provenance for copied extensions so they can be updated intentionally later. Include at least the source URL, source commit/tag/version, and any local modifications worth preserving.
+
+Current extensions:
+
+| Extension | Provenance |
+|-----------|------------|
+| `todos.ts` | Copied into this repo in commit `f99bc06`; upstream source URL/commit not yet recorded. Fill this in before doing a substantial sync/update. |
+| `answer.ts` | Local extension added directly in this repo. Modified during setup to authenticate via existing OpenAI Codex OAuth credentials and prefer GPT-5.2-family Codex models for extraction instead of Haiku/API-key fallback. |
