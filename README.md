@@ -9,6 +9,7 @@ config/
 ├── browser/       # browser extension configs
 ├── ghostty/       # terminal emulator config
 ├── git/           # shared git config (user, aliases, pull/push settings)
+├── agents/        # agent harness config, extensions, skills, and prompts
 ├── nix/           # nix-darwin system configuration
 ├── starship/      # prompt configuration
 ├── tmux/          # tmux config
