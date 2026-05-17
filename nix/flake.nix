@@ -28,6 +28,7 @@
         bat
         starship
         nodejs_22
+        uv
         tree
         wget
         curl

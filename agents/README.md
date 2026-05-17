@@ -11,8 +11,9 @@ The scaffold is intentionally minimal and Pi-only:
 ```text
 agents/
 └── pi/
-    ├── extensions/  # Pi TypeScript extensions
-    ├── skills/      # Pi-specific skills, if/when needed
+    ├── extensions/          # Pi TypeScript extensions
+    ├── intercepted-commands/ # command shims used by extensions
+    ├── skills/              # Pi-specific skills, if/when needed
     └── prompts/     # Pi prompt templates, if/when needed
 ```
 
@@ -28,7 +29,8 @@ Add local extension paths to `~/.pi/agent/settings.json`:
 {
   "extensions": [
     "/Users/hugh/Code/config/agents/pi/extensions/todos.ts",
-    "/Users/hugh/Code/config/agents/pi/extensions/answer.ts"
+    "/Users/hugh/Code/config/agents/pi/extensions/answer.ts",
+    "/Users/hugh/Code/config/agents/pi/extensions/uv.ts"
   ]
 }
 ```
@@ -41,6 +43,12 @@ After changing extension files, reload Pi with `/reload` or restart Pi.
 
 The repo intentionally ignores `.pi/`, including `.pi/todos/`, because those files are local runtime/session state rather than durable configuration.
 
+### UV extension
+
+`agents/pi/extensions/uv.ts` steers Pi's bash tool toward `uv` for Python dependency and environment work. It prepends `agents/pi/intercepted-commands/` to `PATH` and blocks direct `pip`, `pip3`, `poetry`, `python -m pip`, `python -m venv`, and `python -m py_compile` usage with `uv`-based suggestions.
+
+Keep `uv` installed in the system environment; this repo does that via `nix/flake.nix`.
+
 ### Extension provenance
 
 Record provenance for copied extensions so they can be updated intentionally later. Include at least the source URL, source commit/tag/version, and any local modifications worth preserving.
@@ -51,3 +59,4 @@ Current extensions:
 |-----------|------------|
 | `todos.ts` | Copied into this repo in commit `f99bc06`; upstream source URL/commit not yet recorded. Fill this in before doing a substantial sync/update. |
 | `answer.ts` | Local extension added directly in this repo. Modified during setup to authenticate via existing OpenAI Codex OAuth credentials and prefer GPT-5.2-family Codex models for extraction instead of Haiku/API-key fallback. |
+| `uv.ts` + `intercepted-commands/` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `extensions/uv.ts` and `intercepted-commands/{pip,pip3,poetry,python,python3}`. No local modifications. |
