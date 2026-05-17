@@ -23,7 +23,7 @@ There are no top-level `shared/`, `claude/`, or `codex/` directories yet. Add sh
 
 Pi loads these files through Pi settings that point at this repo, rather than symlinks into `~/.pi/agent/extensions/`.
 
-Add local extension paths to `~/.pi/agent/settings.json`:
+Add local extension and skill paths to `~/.pi/agent/settings.json`:
 
 ```json
 {
@@ -31,11 +31,14 @@ Add local extension paths to `~/.pi/agent/settings.json`:
     "/Users/hugh/Code/config/agents/pi/extensions/todos.ts",
     "/Users/hugh/Code/config/agents/pi/extensions/answer.ts",
     "/Users/hugh/Code/config/agents/pi/extensions/uv.ts"
+  ],
+  "skills": [
+    "/Users/hugh/Code/config/agents/pi/skills/web-browser"
   ]
 }
 ```
 
-After changing extension files, reload Pi with `/reload` or restart Pi.
+After changing extension or skill files, reload Pi with `/reload` or restart Pi.
 
 ### Todo extension
 
@@ -49,6 +52,23 @@ The repo intentionally ignores `.pi/`, including `.pi/todos/`, because those fil
 
 Keep `uv` installed in the system environment; this repo does that via `nix/flake.nix`.
 
+### Web browser skill
+
+`agents/pi/skills/web-browser` provides lightweight Chrome/Chromium control through the Chrome DevTools Protocol: navigation, JavaScript evaluation, screenshots, mobile emulation, element picking, cookie dialog dismissal, console/error/network logging, and network summaries.
+
+Dependencies:
+
+- Node.js and npm
+- Google Chrome or Chromium
+- The skill-local npm dependency installed from `agents/pi/skills/web-browser/scripts/package.json`
+
+Install or refresh the npm dependency after cloning:
+
+```bash
+cd ~/Code/config/agents/pi/skills/web-browser/scripts
+npm install
+```
+
 ### Extension provenance
 
 Record provenance for copied extensions so they can be updated intentionally later. Include at least the source URL, source commit/tag/version, and any local modifications worth preserving.
@@ -60,3 +80,4 @@ Current extensions:
 | `todos.ts` | Copied into this repo in commit `f99bc06`; upstream source URL/commit not yet recorded. Fill this in before doing a substantial sync/update. |
 | `answer.ts` | Local extension added directly in this repo. Modified during setup to authenticate via existing OpenAI Codex OAuth credentials and prefer GPT-5.2-family Codex models for extraction instead of Haiku/API-key fallback. |
 | `uv.ts` + `intercepted-commands/` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `extensions/uv.ts` and `intercepted-commands/{pip,pip3,poetry,python,python3}`. No local modifications. |
+| `skills/web-browser` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `skills/web-browser`. No local modifications. |
