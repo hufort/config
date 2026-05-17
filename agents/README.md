@@ -11,10 +11,11 @@ The scaffold is intentionally minimal and Pi-only:
 ```text
 agents/
 └── pi/
+    ├── package.json         # npm dependencies shared by Pi extensions
     ├── extensions/          # Pi TypeScript extensions
     ├── intercepted-commands/ # command shims used by extensions
     ├── skills/              # Pi-specific skills, if/when needed
-    └── prompts/     # Pi prompt templates, if/when needed
+    └── prompts/             # Pi prompt templates, if/when needed
 ```
 
 There are no top-level `shared/`, `claude/`, or `codex/` directories yet. Add shared or harness-specific directories only when a concrete need appears; avoid creating empty taxonomy ahead of real usage.
@@ -30,12 +31,20 @@ Add local extension and skill paths to `~/.pi/agent/settings.json`:
   "extensions": [
     "/Users/hugh/Code/config/agents/pi/extensions/todos.ts",
     "/Users/hugh/Code/config/agents/pi/extensions/answer.ts",
-    "/Users/hugh/Code/config/agents/pi/extensions/uv.ts"
+    "/Users/hugh/Code/config/agents/pi/extensions/uv.ts",
+    "/Users/hugh/Code/config/agents/pi/extensions/firecrawl.ts"
   ],
   "skills": [
     "/Users/hugh/Code/config/agents/pi/skills/web-browser"
   ]
 }
+```
+
+Install or refresh shared Pi extension dependencies after cloning:
+
+```bash
+cd ~/Code/config/agents/pi
+npm install
 ```
 
 After changing extension or skill files, reload Pi with `/reload` or restart Pi.
@@ -80,4 +89,5 @@ Current extensions:
 | `todos.ts` | Copied into this repo in commit `f99bc06`; upstream source URL/commit not yet recorded. Fill this in before doing a substantial sync/update. |
 | `answer.ts` | Local extension added directly in this repo. Modified during setup to authenticate via existing OpenAI Codex OAuth credentials and prefer GPT-5.2-family Codex models for extraction instead of Haiku/API-key fallback. |
 | `uv.ts` + `intercepted-commands/` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `extensions/uv.ts` and `intercepted-commands/{pip,pip3,poetry,python,python3}`. No local modifications. |
+| `firecrawl.ts` | Adapted from `davis7dotsh/my-pi-setup` `extensions/firecrawl-search.ts` on 2026-05-17. Local modifications: updated imports to current `@earendil-works/*` Pi packages, namespaced tools as `firecrawl_search`/`firecrawl_scrape`, added bounded/truncated output, normalized search formatting, stricter URL/integer handling, flattened to the repo extension naming convention, and settings-based loading. |
 | `skills/web-browser` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `skills/web-browser`. No local modifications. |
