@@ -60,8 +60,6 @@ config/
    ```
    Note: the activation script will re-create the `~/.tmux.conf` and `~/.config/git/config` symlinks on each rebuild.
 
-6. Install Cursor shell command: `Cmd+Shift+P` → "Install 'cursor' command"
-
 ## Daily use
 
 Rebuild after editing nix config:
@@ -74,7 +72,6 @@ rebuild  # alias for: sudo darwin-rebuild switch --flake ~/.config/nix-darwin-co
 - Raycast
 - Ghostty
 - Arc
-- Cursor
 - 1Password
 
 ## Notes
