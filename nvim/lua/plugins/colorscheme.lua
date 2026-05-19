@@ -1,3 +1,5 @@
+-- Solarized provides Neovim/LazyVim highlight colors.
+-- Transparency lets Ghostty's Hivacruz background show through.
 return {
   {
     "maxmx03/solarized.nvim",
