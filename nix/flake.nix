@@ -41,7 +41,7 @@
 
         # Pi coding agent, pinned and invoked via npm without a global install.
         (writeShellScriptBin "pi" ''
-          exec ${nodejs_22}/bin/npx -y @earendil-works/pi-coding-agent@0.74.0 "$@"
+          exec ${nodejs_22}/bin/npx -y @earendil-works/pi-coding-agent@0.75.3 "$@"
         '')
       ];
 
