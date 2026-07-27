@@ -1,0 +1,32 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.tabSize": 2,
+  "editor.minimap.enabled": false,
+  "editor.guides.indentation": false,
+  "editor.bracketPairColorization.enabled": false,
+  "editor.cursorStyle": "block",
+  "editor.cursorBlinking": "solid",
+  "editor.unicodeHighlight.ambiguousCharacters": false,
+  "editor.accessibilitySupport": "off",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.fontFamily": "Cartograph CF, Menlo, monospace",
+  "editor.fontLigatures": "'ss01'",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "workbench.startupEditor": "none",
+  "telemetry.telemetryLevel": "off",
+  "typescript.format.enable": false,
+  "vim.smartRelativeLine": true,
+  "vim.cursorStylePerMode": {
+    "normal": "block",
+    "insert": "line",
+    "visual": "block",
+    "visualline": "block",
+    "visualblock": "block",
+    "replace": "underline"
+  },
+  "claudeCode.preferredLocation": "panel",
+  "workbench.colorTheme": "Hivacruz"
+}
