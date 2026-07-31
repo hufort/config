@@ -24,6 +24,7 @@
         ripgrep
         fd
         fzf
+        ffmpeg
         eza
         bat
         starship
