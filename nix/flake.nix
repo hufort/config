@@ -40,10 +40,7 @@
         zoxide
         pam-reattach
 
-        # Pi coding agent, pinned and invoked via npm without a global install.
-        (writeShellScriptBin "pi" ''
-          exec ${nodejs_22}/bin/npx -y @earendil-works/pi-coding-agent@0.75.3 "$@"
-        '')
+        pi-coding-agent
       ];
 
       # Nerd fonts for prompt symbols
