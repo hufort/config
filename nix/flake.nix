@@ -5,9 +5,10 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew }:
   let
     configuration = { pkgs, ... }: {
       system.primaryUser = "hugh";
@@ -42,6 +43,27 @@
 
         pi-coding-agent
       ];
+
+      # Install macOS GUI applications declaratively through Homebrew.
+      homebrew = {
+        enable = true;
+        casks = [ "hammerspoon" ];
+        onActivation = {
+          autoUpdate = true;
+          upgrade = true;
+        };
+      };
+
+      # Start Hammerspoon for the logged-in user. It must be opened once after
+      # installation to grant it Accessibility permission.
+      launchd.user.agents.hammerspoon = {
+        command = "/Applications/Hammerspoon.app/Contents/MacOS/Hammerspoon";
+        serviceConfig = {
+          RunAtLoad = true;
+          KeepAlive = false;
+          ProcessType = "Interactive";
+        };
+      };
 
       # Nerd fonts for prompt symbols
       fonts.packages = with pkgs; [
@@ -89,6 +111,8 @@
         mkdir -p /Users/hugh/.config/git
         ln -sf /Users/hugh/Code/config/git/config /Users/hugh/.config/git/config
         ln -sfn /Users/hugh/Code/config/nvim /Users/hugh/.config/nvim
+        mkdir -p /Users/hugh/.hammerspoon
+        ln -sfn /Users/hugh/Code/config/hammerspoon/init.lua /Users/hugh/.hammerspoon/init.lua
       '';
 
       # MacOS system defaults config
@@ -112,7 +136,16 @@
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .#simple
     darwinConfigurations."mba" = nix-darwin.lib.darwinSystem {
-      modules = [ configuration ];
+      modules = [
+        configuration
+        nix-homebrew.darwinModules.nix-homebrew
+        {
+          nix-homebrew = {
+            enable = true;
+            user = "hugh";
+          };
+        }
+      ];
     };
   };
 }
