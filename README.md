@@ -13,6 +13,7 @@ config/
 ├── nix/           # nix-darwin system configuration
 ├── starship/      # prompt configuration
 ├── tmux/          # tmux config
+├── vscode/        # Visual Studio Code user settings
 └── zsh/           # shell config, aliases, and functions
 ```
 
@@ -58,7 +59,9 @@ config/
    ```bash
    nix run nix-darwin -- switch --flake ~/.config/nix-darwin-config
    ```
-   Note: the activation script will re-create the `~/.tmux.conf` and `~/.config/git/config` symlinks on each rebuild.
+   Note: the activation script installs the declaratively managed GUI apps and
+   re-creates managed config symlinks, including the VS Code user settings, on
+   each rebuild.
 
 ## Daily use
 
@@ -67,7 +70,23 @@ Rebuild after editing nix config:
 rebuild  # alias for: sudo darwin-rebuild switch --flake ~/.config/nix-darwin-config
 ```
 
-## GUI apps (installed manually)
+## GUI apps
+
+Managed declaratively as Homebrew casks through nix-darwin:
+
+- Hammerspoon
+- Visual Studio Code
+
+The Homebrew activation cleanup policy is intentionally set to `"none"` so
+software installed outside this flake is preserved while existing Macs are
+migrated. Homebrew packages can be audited on each machine with:
+
+```bash
+brew list --formula
+brew list --cask
+```
+
+Installed manually:
 
 - Raycast
 - Ghostty

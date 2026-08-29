@@ -15,6 +15,9 @@
 
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
+      # Homebrew casks expose command-line launchers here (for example `code`).
+      environment.systemPath = [ "/opt/homebrew/bin" ];
+
       environment.systemPackages = with pkgs; [
         vim
         neovim
@@ -47,10 +50,16 @@
       # Install macOS GUI applications declaratively through Homebrew.
       homebrew = {
         enable = true;
-        casks = [ "hammerspoon" ];
+        casks = [
+          "hammerspoon"
+          "visual-studio-code"
+        ];
         onActivation = {
-          autoUpdate = true;
-          upgrade = true;
+          autoUpdate = false;
+          upgrade = false;
+          # Preserve software installed outside this flake while adopting
+          # declarative Homebrew management across existing Macs.
+          cleanup = "none";
         };
       };
 
@@ -113,6 +122,10 @@
         ln -sfn /Users/hugh/Code/config/nvim /Users/hugh/.config/nvim
         mkdir -p /Users/hugh/.hammerspoon
         ln -sfn /Users/hugh/Code/config/hammerspoon/init.lua /Users/hugh/.hammerspoon/init.lua
+        install -d -o hugh -g staff "/Users/hugh/Library/Application Support/Code"
+        install -d -o hugh -g staff "/Users/hugh/Library/Application Support/Code/User"
+        ln -sf /Users/hugh/Code/config/vscode/settings.json "/Users/hugh/Library/Application Support/Code/User/settings.json"
+        sudo -u hugh -H /opt/homebrew/bin/code --install-extension kinoute.hivacruz-theme
       '';
 
       # MacOS system defaults config
