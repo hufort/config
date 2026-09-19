@@ -14,7 +14,7 @@ agents/
     ├── package.json         # npm dependencies shared by Pi extensions
     ├── extensions/          # Pi TypeScript extensions
     ├── intercepted-commands/ # command shims used by extensions
-    ├── skills/              # Pi-specific skills, if/when needed
+    ├── skills/              # Pi-specific personal workflows
     └── prompts/             # Pi prompt templates, if/when needed
 ```
 
@@ -35,7 +35,8 @@ Add local extension and skill paths to `~/.pi/agent/settings.json`:
     "/Users/hugh/Code/config/agents/pi/extensions/firecrawl.ts"
   ],
   "skills": [
-    "/Users/hugh/Code/config/agents/pi/skills/web-browser"
+    "/Users/hugh/Code/config/agents/pi/skills/web-browser",
+    "/Users/hugh/Code/config/agents/pi/skills/commit-like-me"
   ]
 }
 ```
@@ -61,6 +62,12 @@ The repo intentionally ignores `.pi/`, including `.pi/todos/`, because those fil
 
 Keep `uv` installed in the system environment; this repo does that via `nix/flake.nix`.
 
+### Commit skill
+
+`agents/pi/skills/commit-like-me` reviews changes, groups them into atomic commits, and stages and commits them by default using the preferred required-scope Conventional Commit format. It favors the smallest coherent, green commits in a reviewer-friendly narrative—for example, introducing a function before wiring it into callsites. Temporarily unused code is fine if checks pass and a subsequent planned commit uses it. It checks for conflicts with explicit repository conventions and asks which format to use when needed.
+
+Use `/skill:commit-like-me` to commit, or `/skill:commit-like-me --draft` to preview proposed commit boundaries and messages without changing files, staging, or history. An explicit request for messages only also selects draft mode. `--draft` is a skill argument, not a Pi CLI flag.
+
 ### Web browser skill
 
 `agents/pi/skills/web-browser` provides lightweight Chrome/Chromium control through the Chrome DevTools Protocol: navigation, JavaScript evaluation, screenshots, mobile emulation, element picking, cookie dialog dismissal, console/error/network logging, and network summaries.
@@ -78,16 +85,17 @@ cd ~/Code/config/agents/pi/skills/web-browser/scripts
 npm install
 ```
 
-### Extension provenance
+### Asset provenance
 
-Record provenance for copied extensions so they can be updated intentionally later. Include at least the source URL, source commit/tag/version, and any local modifications worth preserving.
+Record provenance for copied agent assets so they can be updated intentionally later. Include at least the source URL, source commit/tag/version, and any local modifications worth preserving.
 
-Current extensions:
+Current assets:
 
-| Extension | Provenance |
-|-----------|------------|
+| Asset | Provenance |
+|-------|------------|
 | `todos.ts` | Copied into this repo in commit `f99bc06`; upstream source URL/commit not yet recorded. Fill this in before doing a substantial sync/update. |
 | `answer.ts` | Local extension added directly in this repo. Modified during setup to authenticate via existing OpenAI Codex OAuth credentials and prefer GPT-5.2-family Codex models for extraction instead of Haiku/API-key fallback. |
 | `uv.ts` + `intercepted-commands/` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `extensions/uv.ts` and `intercepted-commands/{pip,pip3,poetry,python,python3}`. No local modifications. |
 | `firecrawl.ts` | Adapted from `davis7dotsh/my-pi-setup` `extensions/firecrawl-search.ts` on 2026-05-17. Local modifications: updated imports to current `@earendil-works/*` Pi packages, namespaced tools as `firecrawl_search`/`firecrawl_scrape`, added bounded/truncated output, normalized search formatting, stricter URL/integer handling, flattened to the repo extension naming convention, and settings-based loading. |
 | `skills/web-browser` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `skills/web-browser`. No local modifications. |
+| `skills/commit-like-me` | Adapted for Pi from a user-provided Claude skill. Local modifications: added Agent Skills frontmatter, Pi invocation syntax, a default atomic staging/commit workflow with an optional `--draft` mode, and Pi-compatible repository-context guidance. |
