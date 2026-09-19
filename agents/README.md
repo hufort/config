@@ -48,7 +48,7 @@ Add local extension and skill paths to `~/.pi/agent/settings.json`:
 {
   "extensions": [
     "/Users/hugh/Code/config/agents/pi/extensions/todos.ts",
-    "/Users/hugh/Code/config/agents/pi/extensions/answer.ts",
+    "/Users/hugh/Code/config/agents/pi/extensions/questions/index.ts",
     "/Users/hugh/Code/config/agents/pi/extensions/uv.ts",
     "/Users/hugh/Code/config/agents/pi/extensions/firecrawl.ts"
   ],
@@ -87,6 +87,10 @@ This is a manual bootstrap step, not managed by nix-darwin/home-manager — ther
 
 The repo intentionally ignores `.pi/`, including `.pi/todos/`, because those files are local runtime/session state rather than durable configuration.
 
+### Questions extension
+
+`agents/pi/extensions/questions/` provides the generic `ask_questions` tool and the `/answer` command. The tool presents questions supplied in structured form, while `/answer` first extracts questions from the previous assistant response with a model. Both entry points share the same interactive question UI.
+
 ### UV extension
 
 `agents/pi/extensions/uv.ts` steers Pi's bash tool toward `uv` for Python dependency and environment work. It prepends `agents/pi/intercepted-commands/` to `PATH` and blocks direct `pip`, `pip3`, `poetry`, `python -m pip`, `python -m venv`, and `python -m py_compile` usage with `uv`-based suggestions.
@@ -119,7 +123,7 @@ Current assets:
 | Asset | Provenance |
 |-------|------------|
 | `todos.ts` | Copied into this repo in commit `f99bc06`; upstream source URL/commit not yet recorded. Fill this in before doing a substantial sync/update. |
-| `answer.ts` | Local extension added directly in this repo. Modified during setup to authenticate via existing OpenAI Codex OAuth credentials and prefer GPT-5.2-family Codex models for extraction instead of Haiku/API-key fallback. |
+| `questions/` | Local extension evolved from the repo's former `answer.ts`. It retains model-based extraction for `/answer` and adds a shared interactive UI plus the structured `ask_questions` tool. |
 | `uv.ts` + `intercepted-commands/` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `extensions/uv.ts` and `intercepted-commands/{pip,pip3,poetry,python,python3}`. No local modifications. |
 | `firecrawl.ts` | Adapted from `davis7dotsh/my-pi-setup` `extensions/firecrawl-search.ts` on 2026-05-17. Local modifications: updated imports to current `@earendil-works/*` Pi packages, namespaced tools as `firecrawl_search`/`firecrawl_scrape`, added bounded/truncated output, normalized search formatting, stricter URL/integer handling, flattened to the repo extension naming convention, and settings-based loading. |
 | `skills/web-browser` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `skills/web-browser`. No local modifications. |
