@@ -6,10 +6,10 @@ Agent-related concerns live in this config repo for now because the current asse
 
 ## Layout
 
-The scaffold is intentionally minimal and Pi-only:
-
 ```text
 agents/
+├── shared/
+│   └── skills/              # harness-agnostic Agent Skills, one dir per skill
 └── pi/
     ├── package.json         # npm dependencies shared by Pi extensions
     ├── extensions/          # Pi TypeScript extensions
@@ -18,7 +18,25 @@ agents/
     └── prompts/             # Pi prompt templates, if/when needed
 ```
 
-There are no top-level `shared/`, `claude/`, or `codex/` directories yet. Add shared or harness-specific directories only when a concrete need appears; avoid creating empty taxonomy ahead of real usage.
+There's no top-level `claude/` or `codex/` directory yet — Claude Code needs no harness-specific assets beyond the symlinks described below. Add a harness-specific directory only when a concrete need appears; avoid creating empty taxonomy ahead of real usage. `shared/` exists because `commit-like-me` was independently duplicated for Pi and Claude Code and had drifted; see [Shared skills](#shared-skills).
+
+## Shared skills
+
+`agents/shared/skills/` holds skills used from more than one harness, written to the [Agent Skills](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/skills.md) standard (`name` + `description` frontmatter, directory name matching `name`) that both Claude Code and Pi implement natively. Keep the body of each `SKILL.md` harness-agnostic; only note an invocation-syntax difference (`/name` in Claude Code vs. `/skill:name` in Pi) if the skill text needs to reference its own invocation.
+
+Each harness picks these up differently, since only Pi supports pointing settings at an arbitrary external path:
+
+- **Pi**: a directory entry in `settings.json` (see [Pi setup](#pi-setup)) — Pi discovers every `SKILL.md` under it recursively, so new shared skills need no further settings changes.
+- **Claude Code**: a symlink per skill into `~/.claude/skills/`, since Claude Code only scans that directory (and a project's `.claude/skills/`) and has no settings-driven external path list:
+
+  ```bash
+  ln -s /Users/hugh/Code/config/agents/shared/skills/<name> ~/.claude/skills/<name>
+  ```
+
+Current shared skills:
+
+- **`commit-like-me`**: drafts the message for a single, already-decided commit — required-scope Conventional Commit subject, minimal why-focused body, no PM-tool references unless the commit can't stand without one. Message shape only; it has nothing to say about splitting a diff into multiple commits.
+- **`atomic-commit`**: reviews the working tree, groups changes into a sequence of atomic commits, and stages and commits them by default (`--draft` previews boundaries and messages without touching the index or history). Defers to `commit-like-me`'s rules for each individual commit's message.
 
 ## Pi setup
 
@@ -35,11 +53,13 @@ Add local extension and skill paths to `~/.pi/agent/settings.json`:
     "/Users/hugh/Code/config/agents/pi/extensions/firecrawl.ts"
   ],
   "skills": [
-    "/Users/hugh/Code/config/agents/pi/skills/web-browser",
-    "/Users/hugh/Code/config/agents/pi/skills/commit-like-me"
+    "/Users/hugh/Code/config/agents/pi/skills",
+    "/Users/hugh/Code/config/agents/shared/skills"
   ]
 }
 ```
+
+`skills` entries can be individual skill directories or, as above, a parent directory — Pi discovers every `SKILL.md` under a listed directory recursively.
 
 Install or refresh shared Pi extension dependencies after cloning:
 
@@ -49,6 +69,17 @@ npm install
 ```
 
 After changing extension or skill files, reload Pi with `/reload` or restart Pi.
+
+## Claude Code setup
+
+Claude Code has no settings-driven external path list, so shared skills need a symlink each into `~/.claude/skills/` (see [Shared skills](#shared-skills)):
+
+```bash
+ln -s /Users/hugh/Code/config/agents/shared/skills/commit-like-me ~/.claude/skills/commit-like-me
+ln -s /Users/hugh/Code/config/agents/shared/skills/atomic-commit ~/.claude/skills/atomic-commit
+```
+
+This is a manual bootstrap step, not managed by nix-darwin/home-manager — there's no other symlink-based dotfile management in this repo, so introducing one for two symlinks would be more machinery than the problem needs. Re-run the relevant `ln -s` after cloning on a new machine, or whenever a new shared skill is added.
 
 ### Todo extension
 
@@ -61,12 +92,6 @@ The repo intentionally ignores `.pi/`, including `.pi/todos/`, because those fil
 `agents/pi/extensions/uv.ts` steers Pi's bash tool toward `uv` for Python dependency and environment work. It prepends `agents/pi/intercepted-commands/` to `PATH` and blocks direct `pip`, `pip3`, `poetry`, `python -m pip`, `python -m venv`, and `python -m py_compile` usage with `uv`-based suggestions.
 
 Keep `uv` installed in the system environment; this repo does that via `nix/flake.nix`.
-
-### Commit skill
-
-`agents/pi/skills/commit-like-me` reviews changes, groups them into atomic commits, and stages and commits them by default using the preferred required-scope Conventional Commit format. It favors the smallest coherent, green commits in a reviewer-friendly narrative—for example, introducing a function before wiring it into callsites. Temporarily unused code is fine if checks pass and a subsequent planned commit uses it. It checks for conflicts with explicit repository conventions and asks which format to use when needed.
-
-Use `/skill:commit-like-me` to commit, or `/skill:commit-like-me --draft` to preview proposed commit boundaries and messages without changing files, staging, or history. An explicit request for messages only also selects draft mode. `--draft` is a skill argument, not a Pi CLI flag.
 
 ### Web browser skill
 
@@ -98,4 +123,5 @@ Current assets:
 | `uv.ts` + `intercepted-commands/` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `extensions/uv.ts` and `intercepted-commands/{pip,pip3,poetry,python,python3}`. No local modifications. |
 | `firecrawl.ts` | Adapted from `davis7dotsh/my-pi-setup` `extensions/firecrawl-search.ts` on 2026-05-17. Local modifications: updated imports to current `@earendil-works/*` Pi packages, namespaced tools as `firecrawl_search`/`firecrawl_scrape`, added bounded/truncated output, normalized search formatting, stricter URL/integer handling, flattened to the repo extension naming convention, and settings-based loading. |
 | `skills/web-browser` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `skills/web-browser`. No local modifications. |
-| `skills/commit-like-me` | Adapted for Pi from a user-provided Claude skill. Local modifications: added Agent Skills frontmatter, Pi invocation syntax, a default atomic staging/commit workflow with an optional `--draft` mode, and Pi-compatible repository-context guidance. |
+| `shared/skills/commit-like-me` | Originally a Claude-only, message-drafting-only skill; a separate Pi adaptation (`agents/pi/skills/commit-like-me`) added a default atomic staging/commit workflow and had drifted from it. On migrating both to `shared/`, split back into this skill (message shape only, matching the original Claude scope) and `atomic-commit` (the staging/commit workflow, matching the Pi scope) so each harness can use both without re-duplicating either. |
+| `shared/skills/atomic-commit` | Split out of the former `agents/pi/skills/commit-like-me` during the `shared/` migration above; delegates message formatting to `commit-like-me` instead of duplicating it. |
