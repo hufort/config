@@ -103,6 +103,10 @@ Keep `uv` installed in the system environment; this repo does that via `nix/flak
 
 Use `/skill:grill-me` to begin a session.
 
+### Spec skill
+
+Use `/skill:to-spec` after settling decisions to synthesize the conversation into a spec. It confirms test seams, then saves to a gitignored `tmp/<slug>-spec.md` in the target project unless an issue tracker is already specified. No other skills or tracker setup workflow are required.
+
 ### Web browser skill
 
 `agents/pi/skills/web-browser` provides lightweight Chrome/Chromium control through the Chrome DevTools Protocol: navigation, JavaScript evaluation, screenshots, mobile emulation, element picking, cookie dialog dismissal, console/error/network logging, and network summaries.
@@ -132,6 +136,7 @@ Current assets:
 | `questions/` | Local extension evolved from the repo's former `answer.ts`. It retains model-based extraction for `/answer` and adds a shared interactive UI plus the structured `ask_questions` tool. |
 | `uv.ts` + `intercepted-commands/` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `extensions/uv.ts` and `intercepted-commands/{pip,pip3,poetry,python,python3}`. No local modifications. |
 | `firecrawl.ts` | Adapted from `davis7dotsh/my-pi-setup` `extensions/firecrawl-search.ts` on 2026-05-17. Local modifications: updated imports to current `@earendil-works/*` Pi packages, namespaced tools as `firecrawl_search`/`firecrawl_scrape`, added bounded/truncated output, normalized search formatting, stricter URL/integer handling, flattened to the repo extension naming convention, and settings-based loading. |
+| `skills/to-spec` | Adapted from [mattpocock/skills](https://github.com/mattpocock/skills/tree/c55ee46073ed923f86ce59a5eb3b6d895095d1b7/skills/engineering/to-spec) at commit `c55ee46073ed923f86ce59a5eb3b6d895095d1b7`. Preserves the spec template; replaces setup and label dependencies with gitignored local Markdown or an already-specified tracker, and uses Pi's `ask_questions` for seam confirmation. |
 | `skills/web-browser` | Copied from `mitsuhiko/agent-stuff` at commit `ab79f98104bcd3c6a7c5491e609f6d6700a7414d`: `skills/web-browser`. No local modifications. |
 | `shared/skills/commit-like-me` | Originally a Claude-only, message-drafting-only skill; a separate Pi adaptation (`agents/pi/skills/commit-like-me`) added a default atomic staging/commit workflow and had drifted from it. On migrating both to `shared/`, split back into this skill (message shape only, matching the original Claude scope) and `atomic-commit` (the staging/commit workflow, matching the Pi scope) so each harness can use both without re-duplicating either. |
 | `shared/skills/atomic-commit` | Split out of the former `agents/pi/skills/commit-like-me` during the `shared/` migration above; delegates message formatting to `commit-like-me` instead of duplicating it. |

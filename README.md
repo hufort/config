@@ -70,6 +70,19 @@ Rebuild after editing nix config:
 rebuild  # alias for: sudo darwin-rebuild switch --flake ~/.config/nix-darwin-config
 ```
 
+## Pi skills
+
+Custom skills live in `agents/pi/skills/`. With that directory configured in Pi,
+run `/skill:grill-me` to settle decisions, then `/skill:to-spec` to capture them
+without another requirements interview. `to-spec` confirms test seams before
+writing and preserves the upstream Matt Pocock spec template without requiring
+his other skills or setup.
+
+Specs default to `tmp/<descriptive-slug>-spec.md` in the target project, with
+`/tmp/` added to its `.gitignore` when needed. If the user or project instructions
+already specify an issue tracker, the skill publishes there instead, using the
+project's conventions rather than assuming triage labels.
+
 ## GUI apps
 
 Managed declaratively as Homebrew casks through nix-darwin:
