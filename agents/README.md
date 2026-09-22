@@ -6,80 +6,49 @@ Agent-related concerns live in this config repo for now because the current asse
 
 ## Layout
 
-```text
-agents/
-├── shared/
-│   └── skills/              # harness-agnostic Agent Skills, one dir per skill
-└── pi/
-    ├── package.json         # npm dependencies shared by Pi extensions
-    ├── extensions/          # Pi TypeScript extensions
-    ├── intercepted-commands/ # command shims used by extensions
-    ├── skills/              # Pi-specific personal workflows
-    └── prompts/             # Pi prompt templates, if/when needed
-```
-
-There's no top-level `claude/` or `codex/` directory yet — Claude Code needs no harness-specific assets beyond the symlinks described below. Add a harness-specific directory only when a concrete need appears; avoid creating empty taxonomy ahead of real usage. `shared/` exists because `commit-like-me` was independently duplicated for Pi and Claude Code and had drifted; see [Shared skills](#shared-skills).
+Harness-agnostic assets belong under `agents/shared/`; Pi-specific extensions,
+skills, prompts, dependencies, and command shims belong under `agents/pi/`.
+Browse those directories for the current inventory rather than maintaining a
+parallel tree here. Add another harness-specific directory only when it has
+assets that cannot remain shared.
 
 ## Shared skills
 
 `agents/shared/skills/` holds skills used from more than one harness, written to the [Agent Skills](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/skills.md) standard (`name` + `description` frontmatter, directory name matching `name`) that both Claude Code and Pi implement natively. Keep the body of each `SKILL.md` harness-agnostic; only note an invocation-syntax difference (`/name` in Claude Code vs. `/skill:name` in Pi) if the skill text needs to reference its own invocation.
 
-Each harness picks these up differently, since only Pi supports pointing settings at an arbitrary external path:
-
-- **Pi**: a directory entry in `settings.json` (see [Pi setup](#pi-setup)) — Pi discovers every `SKILL.md` under it recursively, so new shared skills need no further settings changes.
-- **Claude Code**: a symlink per skill into `~/.claude/skills/`, since Claude Code only scans that directory (and a project's `.claude/skills/`) and has no settings-driven external path list:
-
-  ```bash
-  ln -s /Users/hugh/Code/config/agents/shared/skills/<name> ~/.claude/skills/<name>
-  ```
-
-Current shared skills:
-
-- **`commit-like-me`**: drafts the message for a single, already-decided commit — required-scope Conventional Commit subject, minimal why-focused body, no PM-tool references unless the commit can't stand without one. Message shape only; it has nothing to say about splitting a diff into multiple commits.
-- **`atomic-commit`**: reviews the working tree, groups changes into a sequence of atomic commits, and stages and commits them by default (`--draft` previews boundaries and messages without touching the index or history). Defers to `commit-like-me`'s rules for each individual commit's message.
+Each harness discovers these differently: Pi can load the shared parent directory,
+while Claude Code needs one same-named symlink per skill. See the setup sections
+below. The directories and their `SKILL.md` files are authoritative for the
+current inventory and behavior.
 
 ## Pi setup
 
-Pi loads these files through Pi settings that point at this repo, rather than symlinks into `~/.pi/agent/extensions/`.
+Pi loads these assets through the local `~/.pi/agent/settings.json`, which points
+at this checkout rather than relying on symlinks under `~/.pi/agent/`. That file
+also contains machine-local preferences, so it is intentionally not tracked here;
+inspect it directly for the active configuration instead of copying a JSON example
+from this README.
 
-Add local extension and skill paths to `~/.pi/agent/settings.json`:
+Update its `extensions` entries when extension files are added, removed, or moved.
+Its `skills` entries should point at the `agents/pi/skills` and
+`agents/shared/skills` parent directories, allowing Pi to discover skills beneath
+them without another settings change. On a differently located checkout, adjust
+the absolute paths accordingly.
 
-```json
-{
-  "extensions": [
-    "/Users/hugh/Code/config/agents/pi/extensions/todos.ts",
-    "/Users/hugh/Code/config/agents/pi/extensions/questions/index.ts",
-    "/Users/hugh/Code/config/agents/pi/extensions/uv.ts",
-    "/Users/hugh/Code/config/agents/pi/extensions/firecrawl.ts"
-  ],
-  "skills": [
-    "/Users/hugh/Code/config/agents/pi/skills",
-    "/Users/hugh/Code/config/agents/shared/skills"
-  ]
-}
-```
-
-`skills` entries can be individual skill directories or, as above, a parent directory — Pi discovers every `SKILL.md` under a listed directory recursively.
-
-Install or refresh shared Pi extension dependencies after cloning:
-
-```bash
-cd ~/Code/config/agents/pi
-npm install
-```
+Install or refresh the locked Pi extension dependencies from `agents/pi/` with
+`npm ci`.
 
 After changing extension or skill files, reload Pi with `/reload` or restart Pi.
 
 ## Claude Code setup
 
-Claude Code has no settings-driven external path list, so shared skills need a symlink each into `~/.claude/skills/` (see [Shared skills](#shared-skills)):
-
-```bash
-ln -s /Users/hugh/Code/config/agents/shared/skills/commit-like-me ~/.claude/skills/commit-like-me
-ln -s /Users/hugh/Code/config/agents/shared/skills/atomic-commit ~/.claude/skills/atomic-commit
-```
-
-This is a manual bootstrap step, not managed by nix-darwin/home-manager — there's no other symlink-based dotfile management in this repo, so introducing one for two symlinks would be more machinery than the problem needs. Re-run the relevant `ln -s` after cloning on a new machine, or whenever a new shared skill is added.
+Claude Code has no settings-driven external path list, so each shared skill needs
+a same-named symlink from `~/.claude/skills/` to its directory under
+`agents/shared/skills/` (see [Shared skills](#shared-skills)). These are manual,
+machine-local bootstrap links rather than nix-darwin-managed configuration;
+create them after cloning on a new machine and add or remove them when the set of
+shared skills changes. Account for the checkout's absolute path when creating the
+links.
 
 ### Todo extension
 
@@ -93,9 +62,9 @@ The repo intentionally ignores `.pi/`, including `.pi/todos/`, because those fil
 
 ### UV extension
 
-`agents/pi/extensions/uv.ts` steers Pi's bash tool toward `uv` for Python dependency and environment work. It prepends `agents/pi/intercepted-commands/` to `PATH` and blocks direct `pip`, `pip3`, `poetry`, `python -m pip`, `python -m venv`, and `python -m py_compile` usage with `uv`-based suggestions.
-
-Keep `uv` installed in the system environment; this repo does that via `nix/flake.nix`.
+`agents/pi/extensions/uv.ts` steers Python environment and dependency commands
+toward `uv`; its implementation and intercepted-command directory define the
+current command policy. Keep `uv` installed through `nix/flake.nix`.
 
 ### Grilling skills
 
@@ -109,20 +78,9 @@ Use `/skill:to-spec` after settling decisions to synthesize the conversation int
 
 ### Web browser skill
 
-`agents/pi/skills/web-browser` provides lightweight Chrome/Chromium control through the Chrome DevTools Protocol: navigation, JavaScript evaluation, screenshots, mobile emulation, element picking, cookie dialog dismissal, console/error/network logging, and network summaries.
-
-Dependencies:
-
-- Node.js and npm
-- Google Chrome or Chromium
-- The skill-local npm dependency installed from `agents/pi/skills/web-browser/scripts/package.json`
-
-Install or refresh the npm dependency after cloning:
-
-```bash
-cd ~/Code/config/agents/pi/skills/web-browser/scripts
-npm install
-```
+`agents/pi/skills/web-browser/SKILL.md` is the source of truth for its Chrome/CDP
+capabilities and usage. Its scripts have a separate lockfile; install their
+locked dependencies from `agents/pi/skills/web-browser/scripts/` with `npm ci`.
 
 ### Asset provenance
 

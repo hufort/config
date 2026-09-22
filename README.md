@@ -4,18 +4,10 @@ Personal system configuration for macOS, managed with nix-darwin.
 
 ## What's here
 
-```
-config/
-├── browser/       # browser extension configs
-├── ghostty/       # terminal emulator config
-├── git/           # shared git config (user, aliases, pull/push settings)
-├── agents/        # agent harness config, extensions, skills, and prompts
-├── nix/           # nix-darwin system configuration
-├── starship/      # prompt configuration
-├── tmux/          # tmux config
-├── vscode/        # Visual Studio Code user settings
-└── zsh/           # shell config, aliases, and functions
-```
+Configuration is grouped by the tool or subsystem it belongs to. `nix/` is the
+source of truth for system packages, applications, defaults, activation steps,
+and managed links; `agents/` documents the separate agent harness setup. Browse
+the repository root for the current set of tool-specific configuration.
 
 ## Setup on a new machine
 
@@ -44,16 +36,17 @@ config/
    git clone git@github.com:hufort/config.git ~/Code/config
    ```
 
-4. Symlink configs:
+4. Link the bootstrap configuration that is not managed by nix-darwin:
    ```bash
    ln -sf ~/Code/config/zsh/.zshrc ~/.zshrc
-   ln -sf ~/Code/config/tmux/tmux.conf ~/.tmux.conf
-   mkdir -p ~/.config/ghostty ~/.config/git
-   ln -sf ~/Code/config/git/config ~/.config/git/config
+   mkdir -p ~/.config/ghostty
    ln -sf ~/Code/config/starship/starship.toml ~/.config/starship.toml
    ln -sf ~/Code/config/nix ~/.config/nix-darwin-config
    ln -sf ~/Code/config/ghostty/config ~/.config/ghostty/config
    ```
+
+   `nix/flake.nix` is authoritative for links created during activation; do not
+   duplicate that list here.
 
 5. Bootstrap nix-darwin:
    ```bash
@@ -85,10 +78,9 @@ project's conventions rather than assuming triage labels.
 
 ## GUI apps
 
-Managed declaratively as Homebrew casks through nix-darwin:
-
-- Hammerspoon
-- Visual Studio Code
+Managed GUI applications are declared in `homebrew.casks` in
+`nix/flake.nix`; consult that list rather than maintaining another inventory
+here.
 
 The Homebrew activation cleanup policy is intentionally set to `"none"` so
 software installed outside this flake is preserved while existing Macs are
